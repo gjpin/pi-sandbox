@@ -8,7 +8,7 @@
 ;; Deny everything by default
 (deny default)
 
-;; Allow network access (required for Claude API)
+;; Allow network access (required for LLM API)
 (allow network*)
 
 ;; Deny reading files anywhere on host (allow rules override this below)
@@ -21,7 +21,7 @@
   (subpath (string-append (param "HOME_DIR") "/.ssh"))
 )
 
-;; allow directories required to launch claude-code
+;; allow directories required to launch pi
 (allow file-read*
   (subpath "/usr")
   (subpath "/bin")
@@ -38,8 +38,8 @@
 (allow file-read-metadata
   (subpath "/run"))
 
-;; === IMPORTANT === MODIFY this section to include ALL directories leading to claude workdir ===
-;; for some reason claude-code needs list access to all parent directories of TARGET_DIR
+;; === IMPORTANT === MODIFY this section to include ALL directories leading to pi workdir ===
+;; for some reason pi needs list access to all parent directories of TARGET_DIR
 ;; - it doesn't need access to read the contents of directories, only the directories
 ;; themselves. Otherwise it will set PATH to "" and disable colored output
 (allow file-read*
@@ -72,7 +72,7 @@
 (allow mach-priv-task-port (target same-sandbox))
 
 ;; User preferences - from https://github.com/anthropic-experimental/sandbox-runtime/blob/1bafa66a2c3ebc52569fc0c1a868e85e778f66a0/src/sandbox/macos-sandbox-utils.ts#L200
-;; (allow user-preference-read) ;; doesn't seem to be required by claude-code
+;; (allow user-preference-read) ;; doesn't seem to be required by pi
 
 ;; Allow read access to system information
 ;; From Chromium's sandbox policy for macOS
@@ -132,17 +132,8 @@
     (subpath (param "CACHE_DIR"))
     (subpath (string-append (param "HOME_DIR") "/.cache"))
 
-    ;; Claude configuration
-    (subpath (string-append (param "HOME_DIR") "/.claude"))
-    (literal (string-append (param "HOME_DIR") "/.claude.json"))
-    (literal (string-append (param "HOME_DIR") "/.claude.json.backup"))
-    (subpath (string-append (param "HOME_DIR") "/Library/Caches/claude-cli-nodejs"))
-
-    ;; Gemini configuration
-    (subpath (string-append (param "HOME_DIR") "/.gemini"))
-
-    ;; Codex configuration
-    (subpath (string-append (param "HOME_DIR") "/.codex"))
+    ;; Pi configuration
+    (subpath (string-append (param "HOME_DIR") "/.pi"))
 
     ;; Nix defexprs
     (subpath (string-append (param "HOME_DIR") "/.nix-defexpr"))
@@ -170,8 +161,7 @@
   )
 )
 
-;; Gemini-specific permissions
-(allow pseudo-tty)
+;; Pi-specific permissions
 
 ;; Allow mach lookups for essential services
 (allow mach-lookup
@@ -205,7 +195,7 @@
   (global-name "com.apple.coreservices.launchservicesd")
 )
 
-;; The following is required to get Claude API Key from macOS Keychain (if logged in via /login)
+;; The following is required to get API key from macOS Keychain (if logged in via /login)
 
 ;; Specifically allow login keychain
 (allow file-read*

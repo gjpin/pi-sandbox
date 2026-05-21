@@ -1,5 +1,5 @@
 {
-  description = "A macOS sandbox configuration for Claude Code that restricts filesystem access";
+  description = "A macOS sandbox configuration for Pi Coding Agent that restricts filesystem access";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/25.11";
@@ -11,8 +11,8 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        claude-sandbox = pkgs.stdenv.mkDerivation {
-          pname = "claude-sandbox";
+        pi-sandbox = pkgs.stdenv.mkDerivation {
+          pname = "pi-sandbox";
           version = "0.1.0";
 
           src = ./.;
@@ -26,35 +26,35 @@
           '';
 
           meta = with pkgs.lib; {
-            description = "A macOS sandbox configuration for Claude Code";
+            description = "A macOS sandbox configuration for Pi Coding Agent";
             longDescription = ''
-              A macOS sandbox-exec profile that limits Claude Code's access to your
-              filesystem. It prevents Claude Code from reading your home directory
+              A macOS sandbox-exec profile that limits Pi's access to your
+              filesystem. It prevents Pi from reading your home directory
               (except for the current working directory) and restricts writes to
               only the target directory and temporary locations.
             '';
             license = licenses.mit;
             platforms = platforms.darwin;
-            mainProgram = "claude-sandbox";
+            mainProgram = "pi-sandbox";
           };
         };
       in
       {
         packages = {
-          default = claude-sandbox;
-          inherit claude-sandbox;
+          default = pi-sandbox;
+          inherit pi-sandbox;
         };
 
         apps.default = {
           type = "app";
-          program = "${claude-sandbox}/bin/claude-sandbox";
+          program = "${pi-sandbox}/bin/pi-sandbox";
         };
 
         devShells.default = pkgs.mkShell {
           buildInputs = [ pkgs.bash ];
 
           shellHook = ''
-            echo "claude-code-sandbox development shell"
+            echo "pi-sandbox development shell"
             echo "Run './install' to install to ~/.local/bin, or 'nix build' to build with Nix"
           '';
         };

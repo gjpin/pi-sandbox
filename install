@@ -4,7 +4,7 @@ set -xe
 
 PREFIX="${PREFIX:-${HOME}/.local}"
 BIN_INSTALL_DIR="${PREFIX}/bin"
-BIN_INSTALL_FILE="${BIN_INSTALL_DIR}/claude-sandbox"
+BIN_INSTALL_FILE="${BIN_INSTALL_DIR}/pi-sandbox"
 
 mkdir -p "${BIN_INSTALL_DIR}"
 
@@ -18,7 +18,7 @@ EOF
 cat noread.sb >> "${BIN_INSTALL_FILE}"
 echo "INNER_EOF" >> "${BIN_INSTALL_FILE}"
 
-# append claude-sandbox script without the hashbang
-tail -n +2 claude-sandbox >> "${BIN_INSTALL_FILE}"
+# append pi-sandbox script without the hashbang
+tail -n +2 pi-sandbox >> "${BIN_INSTALL_FILE}"
 
 chmod +x "${BIN_INSTALL_FILE}"

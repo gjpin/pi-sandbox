@@ -7,16 +7,16 @@ function usage() {
 Usage: $0 [--target-dir <dir>] [--use-profile <file>] [--write-profile <file>] [--write-base-profile <file>] [--no-workaround] [--] <program> <arguments>
 
 Options:
-  --target-dir <dir>            Directory to generate claude workaround rules "(allow file-read* literal(..))" for. (default: .)
+  --target-dir <dir>            Directory to generate pi workaround rules "(allow file-read* literal(..))" for. (default: .)
   --use-profile <file>          Use specified file as base profile template instead of the built-in noread.sb.
   --write-profile <file>        Write the generated sandbox profile to specified file and exit.
   --write-base-profile <file>   Write the built-in noread.sb profile to specified file and exit.
-  --no-workaround               Don't generate workaround rules, maybe use this when claude-code is fixed!
+  --no-workaround               Don't generate workaround rules.
   -h, --help                    Show this help message
 
 Example:
-  $0 --target-dir /path/to/dir -- claude
-  $0 --use-profile custom.sb -- claude
+  $0 --target-dir /path/to/dir -- pi
+  $0 --use-profile custom.sb -- pi
   $0 --write-profile profile.sb
 EOF
     exit 1
@@ -124,15 +124,15 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-# Default to bash if no command provided
+# Default to pi if no command provided
 if [[ ${#POSITIONAL_ARGS[@]} -eq 0 ]]; then
-    POSITIONAL_ARGS=("bash")
+    POSITIONAL_ARGS=("pi")
 fi
 
 # Detect if already running inside a sandbox (nested sandboxing is not supported on macOS)
 if sandbox-exec -p '(version 1)(allow default)' true 2>/dev/null; [ $? -eq 71 ]; then
     echo "Error: Already running inside a sandbox. Nested sandboxing is not supported on macOS." >&2
-    echo "If you're running inside claude-sandbox, you cannot nest another sandbox." >&2
+    echo "If you're running inside pi-sandbox, you cannot nest another sandbox." >&2
     exit 1
 fi
 
@@ -166,7 +166,7 @@ if [[ "${NO_WORKAROUND}" == 0 ]]; then
 ${BASE_PROFILE_CONTENT}
 
 ;; Generated allow-read rules for: ${TARGET_DIR}
-;; for some reason claude-code needs list access to all parent directories of TARGET_DIR
+;; for some reason pi needs list access to all parent directories of TARGET_DIR
 ;; - it doesn't need access to read the contents of directories, only the directories
 ;; themselves. Otherwise it will set PATH to "" and disable colored output
 ${WORKAROUND_RULES}
@@ -183,7 +183,7 @@ if [[ -n "${WRITE_PROFILE:-}" ]]; then
 fi
 
 # Write to a temp file for sandbox-exec
-PROFILE_FILE="$( (mkdir -p "${HOME}/.config/claude-sandbox" && mktemp "${HOME}/.config/claude-sandbox/profile.sb.XXXXXXXXXX") 2>/dev/null || mktemp "/tmp/claude-sandbox-profile.sb.XXXXXXXXXX")"
+PROFILE_FILE="$( (mkdir -p "${HOME}/.config/pi-sandbox" && mktemp "${HOME}/.config/pi-sandbox/profile.sb.XXXXXXXXXX") 2>/dev/null || mktemp "/tmp/pi-sandbox-profile.sb.XXXXXXXXXX")"
 echo "${FULL_PROFILE}" > "${PROFILE_FILE}"
 
 # Trap to clean up the temp file on exit
