@@ -57,6 +57,10 @@
     ;; Nix profile binaries (symlinks to /nix/store)
     (subpath (string-append (param "HOME_DIR") "/.nix-profile"))
     (subpath (string-append (param "HOME_DIR") "/.local/state/nix"))
+    ;; User-local binaries (tools installed via pip, cargo, etc.)
+    (subpath (string-append (param "HOME_DIR") "/.local/bin"))
+    ;; uv tool installations (semble, etc.)
+    (subpath (string-append (param "HOME_DIR") "/.local/share/uv"))
     ;; gh CLI
     (subpath (string-append (param "HOME_DIR") "/.config/gh"))
 )
