@@ -94,6 +94,15 @@ pi-sandbox --write-base-profile custom.sb
 
 # use a custom profile template instead of the built-in noread.sb
 pi-sandbox --use-profile custom.sb -- pi
+
+# launch pi with no skills loaded
+pi-sandbox --no-skills
+
+# launch pi with specific skills only (overrides defaults)
+pi-sandbox --no-skills --skill ./my-skill.md
+
+# add extra skills on top of defaults
+pi-sandbox --skill ./my-skill1 --skill ./my-skill2
 ```
 
 ## How to add access to more directories

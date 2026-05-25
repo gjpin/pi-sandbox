@@ -12,6 +12,8 @@ Options:
   --write-profile <file>        Write the generated sandbox profile to specified file and exit.
   --write-base-profile <file>   Write the built-in noread.sb profile to specified file and exit.
   --no-workaround               Don't generate workaround rules.
+  --no-skills, -ns              Launch pi with no skills loaded
+  --skill <path>                Load a specific skill file or directory (repeatable)
   -h, --help                    Show this help message
 
 Example:
@@ -98,6 +100,14 @@ while [[ $# -gt 0 ]]; do
             NO_WORKAROUND=1
             shift 1
             ;;
+        --no-skills|-ns)
+            NO_SKILLS=1
+            shift 1
+            ;;
+        --skill)
+            SKILL_PATHS+=("$2")
+            shift 2
+            ;;
         -h|--help)
             usage
             ;;
@@ -127,6 +137,18 @@ done
 # Default to pi if no command provided
 if [[ ${#POSITIONAL_ARGS[@]} -eq 0 ]]; then
     POSITIONAL_ARGS=("pi")
+fi
+
+# Translate skills flags into pi arguments (must come after the program name but before other args)
+if [[ -n "${NO_SKILLS:-}" ]]; then
+    POSITIONAL_ARGS=("${POSITIONAL_ARGS[0]}" "--no-skills" "${POSITIONAL_ARGS[@]:1}")
+fi
+if [[ -n "${SKILL_PATHS:-}" ]]; then
+    skill_args=()
+    for skill_path in "${SKILL_PATHS[@]}"; do
+        skill_args+=("--skill" "${skill_path}")
+    done
+    POSITIONAL_ARGS=("${POSITIONAL_ARGS[0]}" "${skill_args[@]}" "${POSITIONAL_ARGS[@]:1}")
 fi
 
 # Detect if already running inside a sandbox (nested sandboxing is not supported on macOS)
@@ -190,4 +212,4 @@ echo "${FULL_PROFILE}" > "${PROFILE_FILE}"
 # shellcheck disable=SC2064
 trap "rm -f '${PROFILE_FILE}'" EXIT
 
-sandbox-exec -f "${PROFILE_FILE}" -D "TARGET_DIR=${TARGET_DIR}" -D "TMP_DIR=/tmp" -D "HOME_DIR=${HOME}" -D "CACHE_DIR=${HOME}/.cache" "${POSITIONAL_ARGS[@]}"
+sandbox-exec -f "${PROFILE_FILE}" -D "TARGET_DIR=${TARGET_DIR}" -D "TMP_DIR=/tmp" -D "HOME_DIR=${HOME}" -D "CACHE_DIR=${HOME}/.cache" -- "${POSITIONAL_ARGS[@]}"
