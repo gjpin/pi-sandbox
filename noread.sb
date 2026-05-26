@@ -62,8 +62,10 @@
     (subpath (string-append (param "HOME_DIR") "/.local/bin"))
     ;; uv tool installations (semble, etc.)
     (subpath (string-append (param "HOME_DIR") "/.local/share/uv"))
-    ;; pnpm tool installations
+    ;; pnpm
     (subpath (string-append (param "HOME_DIR") "/.pnpm"))
+    ;; npm-global
+    (subpath (string-append (param "HOME_DIR") "/.npm-global"))
     ;; gh CLI
     (subpath (string-append (param "HOME_DIR") "/.config/gh"))
 )
@@ -147,6 +149,9 @@
 
     ;; Nix defexprs
     (subpath (string-append (param "HOME_DIR") "/.nix-defexpr"))
+
+    ;; npm
+    (subpath (string-append (param "HOME_DIR") "/.npm"))
 
     ;; Standard I/O devices
     (literal "/dev/stdout")
