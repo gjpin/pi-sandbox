@@ -32,6 +32,7 @@
   (subpath "/private/etc")
   (subpath "/System")
   (subpath "/nix")
+  (subpath (string-append (param "HOME_DIR") "/.pnpm"))
   )
 
 ;; necessary for nix-darwin's `/run/current-system/sw/bin`
@@ -61,6 +62,8 @@
     (subpath (string-append (param "HOME_DIR") "/.local/bin"))
     ;; uv tool installations (semble, etc.)
     (subpath (string-append (param "HOME_DIR") "/.local/share/uv"))
+    ;; pnpm tool installations
+    (subpath (string-append (param "HOME_DIR") "/.pnpm"))
     ;; gh CLI
     (subpath (string-append (param "HOME_DIR") "/.config/gh"))
 )
@@ -138,6 +141,9 @@
 
     ;; Pi configuration
     (subpath (string-append (param "HOME_DIR") "/.pi"))
+
+    ;; Agents configuration
+    (subpath (string-append (param "HOME_DIR") "/.agents"))
 
     ;; Nix defexprs
     (subpath (string-append (param "HOME_DIR") "/.nix-defexpr"))
